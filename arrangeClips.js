@@ -107,8 +107,8 @@ const targetsAndDestinations =
     },
 }
 
-resetFiles();
-// arrangeFiles();
+// resetFiles(); // for testing, reset files to their original state
+arrangeFiles();
 
 
 // functions
