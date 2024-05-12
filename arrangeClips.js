@@ -61,6 +61,10 @@ const targetsAndDestinations =
         "regex": ["HearthStone*"],
         "destination": "HearthStone",
     },
+    "HELLDIVERS": {
+        "regex": ["HELLDIVERS*"],
+        "destination": "HELLDIVERS",
+    },
     "League of legends": {
         "regex": ["League-of-legends*", "League of Legends*", "League-of-Legends*"],
         "destination": "League of Legends",
@@ -97,8 +101,12 @@ const targetsAndDestinations =
         "regex": ["Tom Clancy's Rainbow Six  Siege*"],
         "destination": "Rainbow Six Siege",
     },
+    "Undertale": {
+        "regex": ["Undertale*"],
+        "destination": "Undertale",
+    },
     "Valorant": {
-        "regex": ["Valorant*"],
+        "regex": ["Valorant*", "VALORANT*"],
         "destination": "Valorant",
     },
     "Warframe": {
@@ -112,19 +120,26 @@ arrangeFiles();
 
 
 // functions
-function moveFilesToDestination(game) {
+function moveFilesToDestination(game) 
+{
     // get every files with regex and move them to the destination
     const regexes = targetsAndDestinations[game].regex;
-    regexes.forEach(regex => {
+    regexes.forEach(function(regex) 
+    {
         const files = getFilesFromRegex(regex);
-        files.forEach(file => {
-            if (isFolder(file)) return;
+        files.forEach(function(file) 
+        {
+            if ( isFolder(file) ) return;
+
             const oldPath = path.join(directoryPath, file);
             let newPath = path.join(directoryPath, targetsAndDestinations[game].destination, file);
-            if (!folderExists(targetsAndDestinations[game].destination)) {
+            if ( !folderExists(targetsAndDestinations[game].destination) )
+            {
                 fs.mkdirSync(path.join(directoryPath, targetsAndDestinations[game].destination));
             }
-            if (fs.existsSync(newPath)) {
+
+            if ( fs.existsSync(newPath) ) 
+            {
                 // rename newPath to filename + datetime + extension
                 const date = new Date();
                 const datetime = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()}-${date.getHours()}-${date.getMinutes()}-${date.getSeconds()}`;
@@ -132,7 +147,8 @@ function moveFilesToDestination(game) {
                 fs.renameSync(oldPath, newPath);
                 // console.log(`File ${file} already exists and was renamed to ${path.basename(newPath)}`);
             }
-            else {
+            else 
+            {
                 fs.renameSync(oldPath, newPath);
                 // console.log(`Moved ${file} to ${targetsAndDestinations[game].destination}`);
             }
@@ -141,37 +157,44 @@ function moveFilesToDestination(game) {
     });
 }
 
-function getFilesFromRegex(regex) {
+function getFilesFromRegex(regex)
+{
     // get every files with regex
     return fs.readdirSync(directoryPath).filter(file => file.match(regex));
 }
 
-function folderExists(folder) {
+function folderExists(folder) 
+{
     // check if folder exists
     return fs.existsSync(path.join(directoryPath, folder));
 }
 
-function isFolder(file) {
+function isFolder(file) 
+{
     // check if file is a folder
     return fs.lstatSync(path.join(directoryPath, file)).isDirectory();
 }
 
-function arrangeFiles() {
+function arrangeFiles() 
+{
     for (const [game, instructions] of Object.entries(targetsAndDestinations)) {
         moveFilesToDestination(game);
     }
 }
 
-function resetFiles() {
+function resetFiles()
+{
     const everyFolders = fs.readdirSync(directoryPath).filter(file => fs.lstatSync(path.join(directoryPath, file)).isDirectory());
 
-    everyFolders.forEach(folder => {
+    everyFolders.forEach(function(folder) {
         // get every files in the folder, put this file in ../ and delete the folder
         const files = fs.readdirSync(path.join(directoryPath, folder));
-        files.forEach(file => {
+        files.forEach(function(file) 
+        {
             fs.renameSync(path.join(directoryPath, folder, file), path.join(directoryPath, file));
             // console.log(`Moved ${file} to ${directoryPath}`);
         });
+        
         fs.rmdirSync(path.join(directoryPath, folder));
     });
 }
